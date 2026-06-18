@@ -4,6 +4,10 @@ A modern, highly interactive shopping cart and discount system simulator. Users 
 
 🚀 **Live Demo:** [https://simple-cart-system.vercel.app/](https://simple-cart-system.vercel.app/)
 
+Snapshots:
+<img width="1917" height="905" alt="image" src="https://github.com/user-attachments/assets/4a2f6eff-47e3-4d65-baa5-e622c663b2ad" />
+<img width="1917" height="905" alt="image" src="https://github.com/user-attachments/assets/37d55de5-2275-4dbd-82f2-e55434ea0be9" />
+
 ---
 
 ## 🚀 Setup & Run Instructions
