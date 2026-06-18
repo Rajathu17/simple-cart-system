@@ -2,6 +2,8 @@
 
 A modern, highly interactive shopping cart and discount system simulator. Users can explore a curated product catalog, add items, modify quantities, create custom items, apply promo codes with real-time feedback, and see tax/shipping calculations. Built using vanilla web technologies and powered by Vite.
 
+🚀 **Live Demo:** [https://simple-cart-system.vercel.app/](https://simple-cart-system.vercel.app/)
+
 ---
 
 ## 🚀 Setup & Run Instructions
