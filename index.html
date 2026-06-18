@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simple Cart & Discount System</title>
+  <meta name="description" content="An interactive, premium-designed shopping cart and coupon checkout simulator. Built with Vite, HTML, CSS, and Vanilla JavaScript.">
+  <!-- Google Fonts: Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <!-- Toast Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Header -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="logo-area">
+        <div class="logo-icon">
+          <i data-lucide="shopping-bag"></i>
+        </div>
+        <div>
+          <h1>Cartify</h1>
+          <p class="tagline">Discount & Cart Simulator</p>
+        </div>
+      </div>
+      
+      <div class="header-actions">
+        <!-- Quick Stats -->
+        <div class="header-stat">
+          <i data-lucide="package"></i>
+          <span>Catalog: <strong id="catalog-count">0</strong> items</span>
+        </div>
+        
+        <!-- Theme Toggle -->
+        <button id="theme-toggle" class="theme-btn" aria-label="Toggle Theme">
+          <i data-lucide="sun" class="sun-icon"></i>
+          <i data-lucide="moon" class="moon-icon"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Layout -->
+  <main class="main-layout container">
+    <!-- Left Panel: Catalog -->
+    <section class="catalog-section">
+      <div class="section-header">
+        <div class="title-with-badge">
+          <h2>Product Catalog</h2>
+          <span class="badge" id="product-badge">4 Items</span>
+        </div>
+        <p class="section-desc">Select premium items to add them to your interactive shopping cart.</p>
+      </div>
+
+      <!-- Products Grid -->
+      <div class="products-grid" id="products-grid">
+        <!-- Products will be injected here via JavaScript -->
+        <div class="loading-spinner">
+          <div class="spinner"></div>
+          <p>Loading products...</p>
+        </div>
+      </div>
+
+      <!-- Add Custom Product Form (Collapsible Card) -->
+      <div class="custom-product-card glass-panel">
+        <button class="collapse-header" id="custom-form-toggle">
+          <div class="toggle-title">
+            <i data-lucide="plus-circle" class="accent-icon"></i>
+            <span>Add Custom Item to Catalog</span>
+          </div>
+          <i data-lucide="chevron-down" class="chevron-icon"></i>
+        </button>
+        
+        <div class="collapse-content" id="custom-form-content">
+          <form id="custom-product-form" class="custom-form">
+            <div class="form-group">
+              <label for="custom-name">Product Name</label>
+              <input type="text" id="custom-name" placeholder="e.g., Mechanical Keyboard" required autocomplete="off">
+            </div>
+            
+            <div class="form-row">
+              <div class="form-group">
+                <label for="custom-price">Price ($)</label>
+                <input type="number" id="custom-price" placeholder="e.g., 99.99" min="0.01" step="0.01" required>
+              </div>
+              
+              <div class="form-group">
+                <label for="custom-category">Category</label>
+                <select id="custom-category" required>
+                  <option value="Electronics">Electronics</option>
+                  <option value="Accessories">Accessories</option>
+                  <option value="Apparel">Apparel</option>
+                  <option value="Fitness">Fitness</option>
+                  <option value="Custom">Other</option>
+                </select>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-full">
+              <i data-lucide="plus"></i> Create & Add Item
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right Panel: Cart & Calculations -->
+    <aside class="cart-sidebar">
+      <div class="cart-container glass-panel">
+        <div class="cart-header">
+          <div class="cart-title">
+            <i data-lucide="shopping-cart"></i>
+            <h3>Your Cart</h3>
+          </div>
+          <span class="cart-badge" id="cart-count">0</span>
+        </div>
+
+        <!-- Free Shipping Tracker -->
+        <div class="shipping-tracker-container" id="shipping-tracker-container">
+          <div class="tracker-header">
+            <span id="shipping-tracker-message">Add <strong>$100.00</strong> more for Free Shipping!</span>
+            <span class="tracker-percentage" id="shipping-tracker-percent">0%</span>
+          </div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="shipping-progress-bar"></div>
+          </div>
+        </div>
+
+        <!-- Cart Items List -->
+        <div class="cart-items-wrapper">
+          <div class="cart-items" id="cart-items">
+            <!-- Cart Items will be injected here via JavaScript -->
+            <div class="cart-empty-state">
+              <i data-lucide="shopping-bag" class="empty-icon"></i>
+              <p>Your shopping cart is empty.</p>
+              <span class="sub-text">Add items from the catalog to get started.</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Coupon & Calculations Area -->
+        <div class="cart-checkout-details">
+          <!-- Discount Coupon Form -->
+          <div class="coupon-section">
+            <label for="coupon-code">Promo Code</label>
+            <div class="coupon-input-group">
+              <input type="text" id="coupon-code" placeholder="Enter coupon code" autocomplete="off">
+              <button id="apply-coupon-btn" class="btn btn-secondary">Apply</button>
+            </div>
+            
+            <!-- Quick Promo Codes Chips -->
+            <div class="quick-coupons">
+              <span class="quick-title">Quick Coupons:</span>
+              <div class="coupon-chips">
+                <button class="coupon-chip" data-code="SAVE10" title="Get 10% off your subtotal">
+                  SAVE10 (10%)
+                </button>
+                <button class="coupon-chip" data-code="WELCOME20" title="Get 20% off your subtotal">
+                  WELCOME20 (20%)
+                </button>
+                <button class="coupon-chip" data-code="MEGA50" title="Get 50% off your subtotal">
+                  MEGA50 (50%)
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Price Summary Breakdown -->
+          <div class="summary-breakdown">
+            <div class="summary-row">
+              <span>Subtotal</span>
+              <span id="summary-subtotal">$0.00</span>
+            </div>
+            
+            <div class="summary-row discount-row hidden" id="summary-discount-row">
+              <span class="discount-label">
+                Discount (<span id="active-coupon-label">None</span>)
+                <button id="remove-coupon-btn" class="btn-text-delete" title="Remove Coupon">
+                  <i data-lucide="x"></i>
+                </button>
+              </span>
+              <span id="summary-discount">-$0.00</span>
+            </div>
+
+            <div class="summary-row">
+              <span>Shipping</span>
+              <span id="summary-shipping">$0.00</span>
+            </div>
+
+            <div class="summary-row">
+              <span>Estimated Tax (8%)</span>
+              <span id="summary-tax">$0.00</span>
+            </div>
+
+            <hr class="summary-divider">
+
+            <div class="summary-row total-row">
+              <span>Total Amount</span>
+              <div class="total-price-group">
+                <span class="original-price hidden" id="summary-original-total">$0.00</span>
+                <span id="summary-total">$0.00</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Checkout Button -->
+          <button id="checkout-btn" class="btn btn-primary btn-full checkout-btn" disabled>
+            <i data-lucide="credit-card"></i> Proceed to Mock Checkout
+          </button>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- Checkout Success Modal -->
+  <div id="checkout-modal" class="modal-backdrop hidden">
+    <div class="modal-content glass-panel animate-scale-in">
+      <button class="modal-close" id="modal-close-btn">
+        <i data-lucide="x"></i>
+      </button>
+      <div class="modal-body">
+        <div class="success-icon-wrapper">
+          <i data-lucide="check-circle" class="success-icon animate-bounce"></i>
+        </div>
+        <h2>Order Placed Successfully!</h2>
+        <p class="modal-desc">This is a simulation. No real payment has been processed.</p>
+        
+        <div class="receipt-card">
+          <h4>Simulation Receipt</h4>
+          <div class="receipt-row">
+            <span>Items Ordered:</span>
+            <span id="receipt-items-count">0 items</span>
+          </div>
+          <div class="receipt-row">
+            <span>Discount Applied:</span>
+            <span id="receipt-discount-applied">None</span>
+          </div>
+          <hr class="receipt-divider">
+          <div class="receipt-row receipt-total">
+            <span>Amount Paid:</span>
+            <span id="receipt-total-paid">$0.00</span>
+          </div>
+        </div>
+
+        <button id="modal-done-btn" class="btn btn-primary btn-full">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <footer class="app-footer">
+    <div class="container footer-content">
+      <p>&copy; 2026 Cartify Simulators. Built with styling excellence.</p>
+      <div class="footer-links">
+        <a href="https://github.com" target="_blank" rel="noopener noreferrer">GitHub Project</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- App Logic -->
+  <script type="module" src="./main.js"></script>
+</body>
+</html>
